@@ -1,5 +1,6 @@
 import os
 
+
 def split_smallcsv_train_and_val(fn, prefix):
     arr = []
     head = None
@@ -18,22 +19,31 @@ def split_smallcsv_train_and_val(fn, prefix):
     # traingt.txt, trainlist.txt
     # valgt.txt, vallist.txt
     print(prefix + "traingt.txt")
+    gt = open(prefix + "gt.txt", "w")
+    gtlist = open(prefix + "gtlist.txt", "w")
     traingt = open(prefix + "traingt.txt", "w")
     trainlist = open(prefix + "trainlist.txt", "w")
     valgt = open(prefix + "valgt.txt", "w")
     vallist = open(prefix + "vallist.txt", "w")
 
+    gt.write(head + "\n")
+    for i in range(nline):
+        gt.write(arr[i] + "\n")
+        currfn = arr[i].split(",")[0]
+        gtlist.write(currfn + "\n")
     traingt.write(head + "\n")
     valgt.write(head + "\n")
-    for i in range(nline - 1):
+    for i in range(nline):
         if i < half:
             traingt.write(arr[i] + "\n")
-            fn = arr[i].split(",")[0]
-            trainlist.write(fn)
+            currfn = arr[i].split(",")[0]
+            trainlist.write(currfn + "\n")
         else:
             valgt.write(arr[i] + "\n")
-            fn = arr[i].split(",")[0]
-            vallist.write(fn)
+            currfn = arr[i].split(",")[0]
+            vallist.write(currfn + "\n")
+    gt.close()
+    gtlist.close()
     traingt.close()
     trainlist.close()
     valgt.close()
