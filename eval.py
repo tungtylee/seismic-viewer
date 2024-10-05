@@ -44,7 +44,7 @@ def generate_sample_pred(fn):
     detect_df.head()
     detect_df.to_csv(fn, index=False)
 
-def eval(csvgt, csvpred, tols=5):
+def eval(csvgt, csvpred, tols=5, verbose=False):
     gt_df = pd.read_csv(csvgt)
     pred_df = pd.read_csv(csvpred)
 
@@ -78,11 +78,21 @@ def eval(csvgt, csvpred, tols=5):
     print(f"Tols: {tols} / Recall rate: {recall_rate:.2f} / False positives: {false_positive}")
     return tols, recall_rate, false_positive
 
+def eval_curves(csvgt, csvpred, verbose=False):
+    tol = []
+    recall = []
+    fp = []
+    for expo in range(8):
+        tols = (2**expo) * 5
+        tols, recall_rate, false_positive = eval(csvgt, csvpred, tols=tols, verbose=verbose)
+        tol.append(tols)
+        recall.append(recall_rate)
+        fp.append(false_positive)
+    return tol, recall, fp
 
 if __name__ == "__main__":
     csvgt = os.path.join("algdev", "lunar_traingt.txt")
     csvpred = os.path.join("algdev", "sample_lunar_traingt.txt")
     generate_sample_pred(csvpred)
-    for expo in range(5):
-        tols = (2**expo) * 60
-        eval(csvgt, csvpred, tols=tols)
+    tol, recall, fp = eval_curves(csvgt, csvpred, verbose=True)
+
