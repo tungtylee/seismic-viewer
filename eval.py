@@ -10,6 +10,13 @@ from obspy import read
 import baseline
 
 
+def generate_predcsv_from_list(fn, fnlist, time_abs_str_list, time_rel_list):
+    # Compile dataframe of detections
+    detect_df = pd.DataFrame(data = {'filename':fnlist, 'time_abs(%Y-%m-%dT%H:%M:%S.%f)':time_abs_str_list, 'time_rel(sec)':time_rel_list})
+    detect_df.head()
+    detect_df.to_csv(fn, index=False)
+
+
 def generate_sample_pred(fn):
     basedir = "space_apps_2024_seismic_detection"
     test_filename = 'xa.s12.00.mhz.1970-06-26HR00_evid00009'
@@ -26,23 +33,23 @@ def generate_sample_pred(fn):
 
     on_off = baseline.stalta(tr, tr_data, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5)
 
-    fname = test_filename
+    fnamelist = []
+    time_abs_str_list = []
+    time_rel_list = []
+
     starttime = tr.stats.starttime.datetime
 
     # Iterate through detection times and compile them
-    detection_times = []
-    fnames = []
     for i in np.arange(0,len(on_off)):
         triggers = on_off[i]
         on_time = starttime + timedelta(seconds = tr_times[triggers[0]])
         on_time_str = datetime.strftime(on_time,'%Y-%m-%dT%H:%M:%S.%f')
-        detection_times.append(on_time_str)
-        fnames.append(fname)
-        
-    # Compile dataframe of detections
-    detect_df = pd.DataFrame(data = {'filename':fnames, 'time_abs(%Y-%m-%dT%H:%M:%S.%f)':detection_times, 'time_rel(sec)':tr_times[triggers[0]]})
-    detect_df.head()
-    detect_df.to_csv(fn, index=False)
+        time_rel_list.append(tr_times[triggers[0]])
+        time_abs_str_list.append(on_time_str)
+        fnamelist.append(test_filename)
+    
+    generate_predcsv_from_list(fn, fnamelist, time_abs_str_list, time_rel_list)
+    
 
 def eval(csvgt, csvpred, tols=5, verbose=False):
     gt_df = pd.read_csv(csvgt)

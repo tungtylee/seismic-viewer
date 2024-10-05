@@ -7,6 +7,10 @@
 * Baseline algorithm: sta/lta (sta_len=120, lta_len=600, thr_on=4, thr_off=1.5)
 * Eval csvgt and csvpred, eval at different tolerant seconds
 
+## Exploration and Study
+
+* Grid search over the train (val is not included)
+
 ## References:
 
 [1] Space Apps 2024 Seismic Detection Data Packet.
