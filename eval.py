@@ -24,6 +24,9 @@ def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr
     time_rel_list = []
     for fn in fnlist:
         mseed_file = f'{data_directory}{fn}.mseed'
+        if os.path.exists(mseed_file) is False:
+            print(f"Skip {fn}")
+            continue
         st = read(mseed_file)
         # This is how you get the data and the time, which is in seconds
         tr = st.traces[0].copy()
@@ -70,8 +73,9 @@ def eval(csvgt, csvpred, tols=5, verbose=False):
         gt_time_abs = gt_row['time_abs']
         matching_preds = pred_df[pred_df['filename'] == gt_filename]
         if not matching_preds.empty:
+            matching_preds = matching_preds.copy()
             matching_preds['time_diff'] = (matching_preds['time_abs'] - gt_time_abs).abs().dt.total_seconds()
-            
+
             closest_pred_idx = matching_preds['time_diff'].idxmin()
             closest_pred = matching_preds.loc[closest_pred_idx]
             
@@ -82,7 +86,8 @@ def eval(csvgt, csvpred, tols=5, verbose=False):
     false_positive = len(pred_df) - len(pred_used)
     recall_rate = hits / gt_total if gt_total > 0 else 0
 
-    print(f"Tols: {tols} / Recall rate: {recall_rate:.2f} / False positives: {false_positive}")
+    if verbose:
+        print(f"Tols: {tols} / Recall rate: {recall_rate:.2f} / False positives: {false_positive}")
     return tols, recall_rate, false_positive
 
 def eval_curves(csvgt, csvpred, verbose=False):

@@ -11,6 +11,12 @@
 
 * Grid search over the train (val is not included)
 
+
+## Some problems
+
+Exists: xa.s12.00.mhz.1971-04-13HR02_evid00029.mseed
+No: xa.s12.00.mhz.1971-04-13HR00_evid00029.mseed
+
 ## References:
 
 [1] Space Apps 2024 Seismic Detection Data Packet.
