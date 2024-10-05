@@ -16,38 +16,38 @@ def generate_predcsv_from_list(fn, fnlist, time_abs_str_list, time_rel_list):
     detect_df.head()
     detect_df.to_csv(fn, index=False)
 
-
-def generate_sample_pred(fn):
-    basedir = "space_apps_2024_seismic_detection"
-    test_filename = 'xa.s12.00.mhz.1970-06-26HR00_evid00009'
-
-    # code modified from space_apps_2024_seismic_detection/demo_notebook.ipynb
-    data_directory = basedir + '/data/lunar/training/data/S12_GradeA/'
-    mseed_file = f'{data_directory}{test_filename}.mseed'
-    st = read(mseed_file)
-
-    # This is how you get the data and the time, which is in seconds
-    tr = st.traces[0].copy()
-    tr_times = tr.times()
-    tr_data = tr.data
-
-    on_off = baseline.stalta(tr, tr_data, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5)
-
+def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5):
+    # basedir = "space_apps_2024_seismic_detection"
+    # data_directory = basedir + '/data/lunar/training/data/S12_GradeA/'
     fnamelist = []
     time_abs_str_list = []
     time_rel_list = []
+    for fn in fnlist:
+        mseed_file = f'{data_directory}{fn}.mseed'
+        st = read(mseed_file)
+        # This is how you get the data and the time, which is in seconds
+        tr = st.traces[0].copy()
+        tr_times = tr.times()
+        tr_data = tr.data
+        on_off = baseline.stalta(tr, tr_data, sta_len, lta_len, thr_on, thr_off)
+        starttime = tr.stats.starttime.datetime
+        for i in np.arange(0,len(on_off)):
+            triggers = on_off[i]
+            on_time = starttime + timedelta(seconds = tr_times[triggers[0]])
+            on_time_str = datetime.strftime(on_time,'%Y-%m-%dT%H:%M:%S.%f')
+            time_rel_list.append(tr_times[triggers[0]])
+            time_abs_str_list.append(on_time_str)
+            fnamelist.append(fn)
+    return fnamelist, time_abs_str_list, time_rel_list
 
-    starttime = tr.stats.starttime.datetime
 
-    # Iterate through detection times and compile them
-    for i in np.arange(0,len(on_off)):
-        triggers = on_off[i]
-        on_time = starttime + timedelta(seconds = tr_times[triggers[0]])
-        on_time_str = datetime.strftime(on_time,'%Y-%m-%dT%H:%M:%S.%f')
-        time_rel_list.append(tr_times[triggers[0]])
-        time_abs_str_list.append(on_time_str)
-        fnamelist.append(test_filename)
-    
+def generate_sample_pred(fn):
+    basedir = "space_apps_2024_seismic_detection"
+    data_directory = basedir + '/data/lunar/training/data/S12_GradeA/'
+    fnlist = ['xa.s12.00.mhz.1970-06-26HR00_evid00009']
+
+    fnamelist, time_abs_str_list, time_rel_list = \
+        run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5)    
     generate_predcsv_from_list(fn, fnamelist, time_abs_str_list, time_rel_list)
     
 
