@@ -10,12 +10,13 @@
 ## Exploration and Study
 
 * Grid search over the train (val is not included)
-
+* Analyze results from the process of grid search
 
 ## Some problems
 
-Exists: xa.s12.00.mhz.1971-04-13HR02_evid00029.mseed
-No: xa.s12.00.mhz.1971-04-13HR00_evid00029.mseed
+* lunar training data
+    * Exists: xa.s12.00.mhz.1971-04-13HR02_evid00029.mseed
+    * Not found: xa.s12.00.mhz.1971-04-13HR00_evid00029.mseed
 
 ## References:
 
