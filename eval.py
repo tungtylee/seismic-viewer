@@ -24,6 +24,77 @@ def generate_predcsv_from_list(fn, fnlist, time_abs_str_list, time_rel_list):
     detect_df.to_csv(fn, index=False)
 
 
+def run_stalta_st_from_fnlist(
+    data_directory,
+    fnlist,
+    sta_len=120,
+    lta_len=600,
+    thr_on=4,
+    thr_off=1.5,
+    ext=False,
+    goldsigma=6e-9,
+):
+    # basedir = "space_apps_2024_seismic_detection"
+    # data_directory = basedir + '/data/lunar/training/data/S12_GradeA/'
+    fnamelist = []
+    time_abs_str_list = []
+    time_rel_list = []
+    alltr = []
+    alltrdata = []
+    for fn in fnlist:
+        # handle ext
+        if fn[-4:] == ".csv":
+            fn = fn[:-4]
+        if fn[-6:] == ".mseed":
+            fn = fn[:-6]
+        mseed_file = f"{data_directory}{fn}.mseed"
+        if os.path.exists(mseed_file) is False:
+            print(f"Skip {fn}")
+            continue
+        st = read(mseed_file)
+        # This is how you get the data and the time, which is in seconds
+        tr = st.traces[0].copy()
+        tr_times = tr.times()
+        tr_data = tr.data
+        if ext:
+            alltr.append(tr)
+            alltrdata.append(tr_data)
+        on_off = baseline.stalta(tr, tr_data, sta_len, lta_len, thr_on, thr_off)
+        starttime = tr.stats.starttime.datetime
+
+        # prepare single frame
+        time_abs_str_list_single = []
+        time_rel_list_single = []
+        for i in np.arange(0, len(on_off)):
+            triggers = on_off[i]
+            on_time = starttime + timedelta(seconds=tr_times[triggers[0]])
+            on_time_str = datetime.strftime(on_time, "%Y-%m-%dT%H:%M:%S.%f")
+            time_rel_list_single.append(tr_times[triggers[0]])
+            time_abs_str_list_single.append(on_time_str)
+
+        # filter using st
+        on_off_st = gaussian.fixedgaussian(
+            tr, tr_data, sigma=goldsigma, step_size=30, span=320
+        )
+        on_rel_st = [x[0] for x in on_off_st]
+        time_abs_str_list_filt, time_rel_list_filt = gaussian.filter_time_by_on_off(
+            time_abs_str_list_single,
+            time_rel_list_single,
+            on_rel_st,
+            span=180,
+        )
+
+        #
+        for i in range(len(time_abs_str_list_filt)):
+            time_rel_list.append(time_rel_list_filt[i])
+            time_abs_str_list.append(time_abs_str_list_filt[i])
+            fnamelist.append(fn)
+    if ext:
+        return fnamelist, time_abs_str_list, time_rel_list, alltr, alltrdata
+    else:
+        return fnamelist, time_abs_str_list, time_rel_list
+
+
 def run_stalta_from_fnlist(
     data_directory, fnlist, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5, ext=False
 ):

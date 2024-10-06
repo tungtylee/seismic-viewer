@@ -39,7 +39,7 @@ def fixedgaussian(tr, tr_data, sigma, step_size=30, span=320):
     step_samples = int(step_size * sampling_rate)
 
     # Define the fixed threshold: 6 * sigma
-    threshold = 6 * sigma
+    threshold = 3 * sigma
 
     # Detect events where abs(signal) exceeds the threshold
     events = []
@@ -338,7 +338,7 @@ def sta_lta_staticgauss_exp(goldsigma):
                 # merged_on_off = merge_intervals(on_off)
                 on_rel = [x[0] for x in on_off]
                 time_abs_str_list_filt, time_rel_list_filt = filter_time_by_on_off(
-                    time_abs_str_list, time_rel_list, on_rel, span=320
+                    time_abs_str_list, time_rel_list, on_rel, span=180
                 )
                 viewer.viewer_all(tr, tr_data, figtitle, time_rel_list_filt, figfn)
             else:
@@ -364,12 +364,64 @@ def filter_time_by_on_off(time_abs_str_list, time_rel_list, on_rel, span=60):
     return time_abs_str_list_filt, time_rel_list_filt
 
 
+def eval_sta_staticsgauss(goldsigma):
+    # [60, 560, 3.25, 0.75]
+    sta_len_v = [120, 60, 120, 60]
+    lta_len_v = [600, 560, 720, 400]
+    thr_on_v = [4.0, 3.25, 3.25, 4.75]
+    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    basedir = "space_apps_2024_seismic_detection"
+    data_directory = basedir + "/data/lunar/training/data/S12_GradeA/"
+    results = []
+    m = 1
+    sta_len, lta_len, thr_on, thr_off = (
+        sta_len_v[m],
+        lta_len_v[m],
+        thr_on_v[m],
+        thr_off_v[m],
+    )
+
+    fnlist = gridsearch.read_list_to_fnlist(os.path.join("algdev", "lunar_gtlist.txt"))
+    csvgt = os.path.join("algdev", "lunar_traingt.txt")
+    csvpred = os.path.join("algdev", f"lunar_traingt_m1_final.txt")
+    fnamelist, time_abs_str_list, time_rel_list = eval.run_stalta_st_from_fnlist(
+        data_directory,
+        fnlist,
+        sta_len,
+        lta_len,
+        thr_on,
+        thr_off,
+        ext=False,
+        goldsigma=goldsigma,
+    )
+    eval.generate_predcsv_from_list(
+        csvpred, fnamelist, time_abs_str_list, time_rel_list
+    )
+    tol, recall, fp = eval.eval_curves(csvgt, csvpred)
+    score = float(np.mean(np.array(recall)) * 100)
+    nfp = int(np.sum(np.array(fp)))
+    results.append(
+        {
+            "params": (sta_len, lta_len, thr_on, thr_off),
+            "score": score,
+            "nfp": nfp,
+            "tol": tol,
+            "recall": recall,
+            "fp": fp,
+        }
+    )
+    return results
+
+
 if __name__ == "__main__":
     print("Perform statistics")
     goldsigma = daywise_plot()
-    print("Perform dygauss_exp")
-    dygauss_exp()
-    print("Perform staticgauss_exp")
-    staticgauss_exp(goldsigma)
+    # print("Perform dygauss_exp")
+    # dygauss_exp()
+    # print("Perform staticgauss_exp")
+    # staticgauss_exp(goldsigma)
     print("Perform sta_lta_staticgauss_exp")
     sta_lta_staticgauss_exp(goldsigma)
+
+    results = eval_sta_staticsgauss(goldsigma)
+    print(results)
