@@ -13,7 +13,7 @@
 * Analyze results from the process of grid search
 * View all four candidate stalta settings
 * Run dynamic gaussian
-* Static gaussian
+* Run static gaussian
 
 ## Some problems
 
