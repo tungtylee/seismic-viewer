@@ -56,10 +56,10 @@ if __name__ == "__main__":
 
     os.makedirs("algdev_fig", exist_ok=True)
 
-    sta_len_v = [120, 60, 120, 60]
-    lta_len_v = [600, 560, 720, 400]
-    thr_on_v = [4.0, 3.25, 3.25, 4.75]
-    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    sta_len_v = [120, 60, 160, 100]
+    lta_len_v = [600, 720, 680, 760]
+    thr_on_v = [4.0, 3.5, 3.25, 3.75]
+    thr_off_v = [1.5, 0.75, 0.75, 1.0]
 
     ## lunar
     basedir = "space_apps_2024_seismic_detection"

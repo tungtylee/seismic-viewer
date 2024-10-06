@@ -167,10 +167,10 @@ def dygauss_exp():
 
     os.makedirs("algdev_fig", exist_ok=True)
 
-    sta_len_v = [120, 60, 120, 60]
-    lta_len_v = [600, 560, 720, 400]
-    thr_on_v = [4.0, 3.25, 3.25, 4.75]
-    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    sta_len_v = [120, 60, 160, 100]
+    lta_len_v = [600, 720, 680, 760]
+    thr_on_v = [4.0, 3.5, 3.25, 3.75]
+    thr_off_v = [1.5, 0.75, 0.75, 1.0]
 
     ## lunar
     basedir = "space_apps_2024_seismic_detection"
@@ -229,10 +229,10 @@ def staticgauss_exp(goldsigma):
 
     os.makedirs("algdev_fig", exist_ok=True)
 
-    sta_len_v = [120, 60, 120, 60]
-    lta_len_v = [600, 560, 720, 400]
-    thr_on_v = [4.0, 3.25, 3.25, 4.75]
-    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    sta_len_v = [120, 60, 160, 100]
+    lta_len_v = [600, 720, 680, 760]
+    thr_on_v = [4.0, 3.5, 3.25, 3.75]
+    thr_off_v = [1.5, 0.75, 0.75, 1.0]
 
     ## lunar
     basedir = "space_apps_2024_seismic_detection"
@@ -293,10 +293,10 @@ def sta_lta_staticgauss_exp(goldsigma):
 
     os.makedirs("algdev_fig", exist_ok=True)
 
-    sta_len_v = [120, 60, 120, 60]
-    lta_len_v = [600, 560, 720, 400]
-    thr_on_v = [4.0, 3.25, 3.25, 4.75]
-    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    sta_len_v = [120, 60, 160, 100]
+    lta_len_v = [600, 720, 680, 760]
+    thr_on_v = [4.0, 3.5, 3.25, 3.75]
+    thr_off_v = [1.5, 0.75, 0.75, 1.0]
 
     ## lunar
     basedir = "space_apps_2024_seismic_detection"
@@ -366,10 +366,10 @@ def filter_time_by_on_off(time_abs_str_list, time_rel_list, on_rel, span=60):
 
 def eval_sta_staticsgauss(goldsigma):
     # [60, 560, 3.25, 0.75]
-    sta_len_v = [120, 60, 120, 60]
-    lta_len_v = [600, 560, 720, 400]
-    thr_on_v = [4.0, 3.25, 3.25, 4.75]
-    thr_off_v = [1.5, 0.75, 0.75, 0.75]
+    sta_len_v = [120, 60, 160, 100]
+    lta_len_v = [600, 720, 680, 760]
+    thr_on_v = [4.0, 3.5, 3.25, 3.75]
+    thr_off_v = [1.5, 0.75, 0.75, 1.0]
     basedir = "space_apps_2024_seismic_detection"
     data_directory = basedir + "/data/lunar/training/data/S12_GradeA/"
     results = []
@@ -381,9 +381,9 @@ def eval_sta_staticsgauss(goldsigma):
         thr_off_v[m],
     )
 
-    fnlist = gridsearch.read_list_to_fnlist(os.path.join("algdev", "lunar_gtlist.txt"))
-    csvgt = os.path.join("algdev", "lunar_traingt.txt")
-    csvpred = os.path.join("algdev", f"lunar_traingt_m1_final.txt")
+    fnlist = gridsearch.read_list_to_fnlist(os.path.join("algdev", "lunar_vallist.txt"))
+    csvgt = os.path.join("algdev", "lunar_valgt.txt")
+    csvpred = os.path.join("algdev", f"lunar_valgt_m1_final.txt")
     fnamelist, time_abs_str_list, time_rel_list = eval.run_stalta_st_from_fnlist(
         data_directory,
         fnlist,
@@ -420,8 +420,8 @@ if __name__ == "__main__":
     # dygauss_exp()
     # print("Perform staticgauss_exp")
     # staticgauss_exp(goldsigma)
-    print("Perform sta_lta_staticgauss_exp")
-    sta_lta_staticgauss_exp(goldsigma)
+    # print("Perform sta_lta_staticgauss_exp")
+    # sta_lta_staticgauss_exp(goldsigma)
 
     results = eval_sta_staticsgauss(goldsigma)
     print(results)

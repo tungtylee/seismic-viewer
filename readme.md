@@ -11,9 +11,8 @@
 
 * Grid search over the train (val is not included)
 * Analyze results from the process of grid search
-* View all four candidate stalta settings
-* Run dynamic gaussian
-* Run static gaussian
+* View all four candidate stalta settings: `python viewer.py`
+* Run dynamic gaussian and static gaussian: `python gaussian.py`
 
 ## Some problems
 
@@ -27,3 +26,4 @@
 
 [2] `space_apps_2024_seismic_detection/demo_notebook.ipynb`
 
+[3] https://www.geopsy.org/wiki/index.php/Geopsy:_STA/LTA
