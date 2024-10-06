@@ -1,0 +1,52 @@
+lunar
+Exp0
+params [120, 600, 4.0, 1.5]
+score 18.42105263157895
+recall% 47.368421052631575
+fp 422
+Exp1
+params [60, 720, 3.5, 0.75]
+score 33.223684210526315
+recall% 84.21052631578947
+fp 1352
+Exp2
+params [160, 680, 3.25, 0.75]
+score 23.026315789473685
+recall% 63.1578947368421
+fp 422
+Exp3
+params [100, 760, 3.75, 1.0]
+score 27.631578947368418
+recall% 76.31578947368422
+fp 752
+Mars
+Exp0
+params [120, 600, 4.0, 1.5]
+score 0.0
+recall% 0.0
+fp 0
+Exp1
+params [60, 400, 3.25, 0.75]
+score 62.5
+recall% 100.0
+fp 1
+Exp2
+params [60, 400, 4.75, 0.75]
+score 0.0
+recall% 0.0
+fp 0
+Exp3
+params [60, 720, 3.5, 0.75]
+score 62.5
+recall% 100.0
+fp 0
+Exp4
+params [160, 680, 3.25, 0.75]
+score 37.5
+recall% 100.0
+fp 0
+Exp5
+params [100, 760, 3.75, 1.0]
+score 50.0
+recall% 100.0
+fp 0

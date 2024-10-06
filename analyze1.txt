@@ -1,0 +1,51 @@
+Exp1: best score
+params [60, 720, 3.5, 0.75]
+score 40.13157894736842
+Exp2: best recall at timeshift<320
+params [60, 560, 3.25, 0.75]
+recall% 97.36842105263158
+fp 987
+Exp3: reference algo params [120, 600, 4.0, 1.5]
+params [120, 600, 4.0, 1.5]
+score 23.026315789473685
+recall% 60.526315789473685
+fp 259
+Exp4: best recall if fp < 1.2*259
+params [160, 680, 3.25, 0.75]
+recall% 68.42105263157895
+fp 301
+Exp5: minimized fp if recall > 97*0.8
+params [100, 760, 3.75, 1.0]
+recall% 78.94736842105263
+fp 488
+Exp1: best score
+params [100, 480, 3.25, 0.75]
+score 87.5
+Exp2: best recall at timeshift<320
+params [60, 400, 3.25, 0.75]
+recall% 100.0
+fp 2
+Exp3: reference algo params [120, 600, 4.0, 1.5]
+params [120, 600, 4.0, 1.5]
+score 0.0
+recall% 0.0
+fp 0
+Exp4: best recall if fp < 1
+params [60, 400, 4.75, 0.75]
+recall% 100.0
+fp 0
+Exp5: candidate algo params [60, 720, 3.5, 0.75]
+params [60, 720, 3.5, 0.75]
+score 25.0
+recall% 100.0
+fp 1
+Exp6: candidate algo params [160, 680, 3.25, 0.75]
+params [160, 680, 3.25, 0.75]
+score 25.0
+recall% 100.0
+fp 0
+Exp7: candidate algo params [60, 560, 3.25, 0.75]
+params [100, 760, 3.75, 1.0]
+score 25.0
+recall% 100.0
+fp 1
