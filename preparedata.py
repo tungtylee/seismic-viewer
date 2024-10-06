@@ -1,13 +1,16 @@
 import os
 
 
-def split_smallcsv_train_and_val(fn, prefix):
+def split_smallcsv_train_and_val(fn, prefix, special_for_mars=False):
     arr = []
     head = None
     count = 0
+    
     with open(fn) as f:
         for line in f:
             row = line.rstrip()
+            if special_for_mars:
+                row = row.replace(".csv", "")
             if count == 0:
                 head = row
             else:
@@ -54,6 +57,7 @@ if __name__ == "__main__":
     fn = "space_apps_2024_seismic_detection/data/lunar/training/catalogs/apollo12_catalog_GradeA_final.csv"
     prefix = "algdev/lunar_"
     split_smallcsv_train_and_val(fn, prefix)
+
     fn = "space_apps_2024_seismic_detection/data/mars/training/catalogs/Mars_InSight_training_catalog_final.csv"
     prefix = "algdev/mars_"
-    split_smallcsv_train_and_val(fn, prefix)
+    split_smallcsv_train_and_val(fn, prefix, special_for_mars=True)
