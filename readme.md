@@ -11,6 +11,7 @@
 
 * Grid search over the train (val is not included)
 * Analyze results from the process of grid search
+* View all four candidate stalta settings
 
 ## Some problems
 

@@ -16,13 +16,20 @@ def generate_predcsv_from_list(fn, fnlist, time_abs_str_list, time_rel_list):
     detect_df.head()
     detect_df.to_csv(fn, index=False)
 
-def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5):
+def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr_on=4, thr_off=1.5, ext=False):
     # basedir = "space_apps_2024_seismic_detection"
     # data_directory = basedir + '/data/lunar/training/data/S12_GradeA/'
     fnamelist = []
     time_abs_str_list = []
     time_rel_list = []
+    alltr = []
+    alltrdata = []
     for fn in fnlist:
+        # handle ext
+        if fn[-4:] == ".csv":
+            fn = fn[:-4]
+        if fn[-6:] == ".mseed":
+            fn = fn[:-6]
         mseed_file = f'{data_directory}{fn}.mseed'
         if os.path.exists(mseed_file) is False:
             print(f"Skip {fn}")
@@ -32,6 +39,9 @@ def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr
         tr = st.traces[0].copy()
         tr_times = tr.times()
         tr_data = tr.data
+        if ext:
+            alltr.append(tr)
+            alltrdata.append(tr_data)
         on_off = baseline.stalta(tr, tr_data, sta_len, lta_len, thr_on, thr_off)
         starttime = tr.stats.starttime.datetime
         for i in np.arange(0,len(on_off)):
@@ -41,8 +51,10 @@ def run_stalta_from_fnlist(data_directory, fnlist, sta_len=120, lta_len=600, thr
             time_rel_list.append(tr_times[triggers[0]])
             time_abs_str_list.append(on_time_str)
             fnamelist.append(fn)
-    return fnamelist, time_abs_str_list, time_rel_list
-
+    if ext:
+        return fnamelist, time_abs_str_list, time_rel_list, alltr, alltrdata
+    else:
+        return fnamelist, time_abs_str_list, time_rel_list
 
 def generate_sample_pred(fn):
     basedir = "space_apps_2024_seismic_detection"
